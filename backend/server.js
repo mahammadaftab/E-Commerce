@@ -27,6 +27,3 @@ mongoose.connect(process.env.MONGO_URI, {
     console.log(`Server running on port ${process.env.PORT}`)
   );
 }).catch((err) => console.log(err));
-
-import paymentRoutes from './routes/paymentRoutes.js';
-app.use('/api/payments', paymentRoutes);
