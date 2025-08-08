@@ -1,36 +1,17 @@
-import { createStore, combineReducers, applyMiddleware } from 'redux';
-import thunk from 'redux-thunk';
-import { composeWithDevTools } from 'redux-devtools-extension';
-import {
-  productListReducer,
-  productDetailsReducer
-} from './redux/productReducers';
-import {
-  userLoginReducer,
-  userRegisterReducer
-} from './redux/userReducers';
+import { configureStore } from '@reduxjs/toolkit';
+import { apiSlice } from './slices/apiSlice';
+import cartSliceReducer from './slices/cartSlice';
+import authReducer from './slices/authSlice';
 
-const reducer = combineReducers({
-  productList: productListReducer,
-  productDetails: productDetailsReducer,
-  userLogin: userLoginReducer,
-  userRegister: userRegisterReducer,
+const store = configureStore({
+  reducer: {
+    [apiSlice.reducerPath]: apiSlice.reducer,
+    cart: cartSliceReducer,
+    auth: authReducer,
+  },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(apiSlice.middleware),
+  devTools: true,
 });
-
-const userInfoFromStorage = localStorage.getItem('userInfo')
-  ? JSON.parse(localStorage.getItem('userInfo'))
-  : null;
-
-const initialState = {
-  userLogin: { userInfo: userInfoFromStorage }
-};
-
-const middleware = [thunk];
-
-const store = createStore(
-  reducer,
-  initialState,
-  composeWithDevTools(applyMiddleware(...middleware))
-);
 
 export default store;

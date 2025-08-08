@@ -1,20 +1,39 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import HomePage from './pages/HomePage';
-import LoginPage from './pages/LoginPage';
-import ProductPage from './pages/ProductPage';
-import CartPage from './pages/CartPage';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { Container } from 'react-bootstrap';
+import { Outlet } from 'react-router-dom';
+import Header from './components/Header';
+import Footer from './components/Footer';
+import { logout } from './slices/authSlice';
+
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const expirationTime = localStorage.getItem('expirationTime');
+    if (expirationTime) {
+      const currentTime = new Date().getTime();
+
+      if (currentTime > expirationTime) {
+        dispatch(logout());
+      }
+    }
+  }, [dispatch]);
+
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/product/:id" element={<ProductPage />} />
-        <Route path="/cart" element={<CartPage />} />
-      </Routes>
-    </Router>
+    <>
+      <ToastContainer />
+      <Header />
+      <main className='py-3'>
+        <Container>
+          <Outlet />
+        </Container>
+      </main>
+      <Footer />
+    </>
   );
 };
 
